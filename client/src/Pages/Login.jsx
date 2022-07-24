@@ -5,10 +5,10 @@ import Helmet from '../Components/Helmet/Helmet'
 import {useNavigate} from 'react-router-dom'
 import axios from ".././axios"
 import {useCookies} from 'react-cookie'
-
-
+import {  signInWithPopup } from "firebase/auth";
+import { auth,provider } from "./firebase";
 import {Link} from 'react-router-dom'
-
+import GoogleButton from 'react-google-button'
 const Login = ()=> {
   const [cookies, setCookie, removeCookie] = useCookies(null)
 
@@ -42,9 +42,18 @@ const Login = ()=> {
 
     
 }
+const signIn = () => {
+  console.log("hello i am  inside google signin")
+ signInWithPopup(auth,provider).then((result) =>{
+setCookie('username',result.user.displayName)
+navigate('/home')
+  }).catch((error)=>alert(error.message));    
+  }
+
 
   return (<Helmet title='Login'>
     <CommonSection title='Welcome back!'/>
+  
     <section>
       <Container>
         <Row>
@@ -57,19 +66,29 @@ const Login = ()=> {
               </div>
              
               <div className="form__group">
-                <input type='password' placeholder='Password' required ref={loginPasswordRef}/>
+              <input type='password' placeholder='Password' required ref={loginPasswordRef}/>
               </div>
-              <button type='submit' className='addToCart__btn'>Login</button>
+              <div> <button type='submit' className='addToCart__btn'>Login</button></div>
+             
+            
+            
             </form>
-           <Link to='/register'>New to Deliorder ? Create an account</Link>
           
+           <Link to='/register'>New to Deliorder ? Create an account</Link>
+           
           </Col>
           <Col lg='4' md='6'>
-            
+            {/* <section> <button className='addToCart__btn' onClick={signIn}>Login with google</button></section> */}
+            <GoogleButton
+              type="dark" // can be light or dark
+              onClick={signIn}
+            />
           </Col>
         </Row>
       </Container>
+
     </section>
+   
   </Helmet>
 )}
 
